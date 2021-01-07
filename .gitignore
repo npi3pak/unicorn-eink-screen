@@ -1,0 +1,11 @@
+# test image
+image.png
+
+# Environment Variables
+.env
+
+# Other
+.DS_Store
+.cache
+.idea
+.vscode
