@@ -20,10 +20,13 @@ from widgets.update_time import UpdateTime
 from widgets.covid_stat import CovidStat
 from widgets.funny_pic import FunnyPic
 from widgets.temperature import Temperature
+from widgets.mi_temperature import MiTemperature
+from ble import BLEManager
 
 # get config vars from .env
 API_URL_WEATHER = config('API_URL_WEATHER')
 API_URL_COVID = config('API_URL_COVID')
+MAC = 'a4:c1:38:68:87:6f'
 
 run_loop = True
 LOOP_SECONDS = 2
@@ -120,13 +123,17 @@ signal.signal(signal.SIGINT, signal_handler)
 
 renderer = Renderer(blank_size_x, blank_size_y, target)
 
+manager = BLEManager()
+
 temperature = Temperature(20, 10, renderer, API_URL_WEATHER)
 funnyPic = FunnyPic(140, 0, renderer)
 updateTime = UpdateTime(100, 90, renderer)
 covidStat = CovidStat(10, 78, renderer, API_URL_COVID)
+miTemperature = MiTemperature(manager, MAC, API_URL_WEATHER)
 renderer.render()
 
 schedule.every(LOOP_SECONDS).seconds.do(temperature.update)
+schedule.every(LOOP_SECONDS).seconds.do(miTemperature.update)
 schedule.every(LOOP_HOURS).hour.do(covidStat.update)
 
 while run_loop:
